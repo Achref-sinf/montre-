@@ -115,7 +115,7 @@
       box-shadow: 0 0 0 4px rgba(159,126,102,0.08);
     }
 
-    /* ---------- RADIO BOUTONS SUPER VISIBLES ---------- */
+    /* ---------- RADIO BOUTONS AMÉLIORÉS - SÉLECTION TRÈS CLAIRE ---------- */
     .radio-group {
       display: flex;
       flex-wrap: wrap;
@@ -134,12 +134,33 @@
       border: 2px solid #d0dbd8;
       transition: all 0.2s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      position: relative;
     }
 
+    /* AMÉLIORATION: Indicateur de sélection beaucoup plus visible */
     .radio-group div:has(input:checked) {
-      background: #d9eee8;
+      background: #c8e6d9;
       border-color: #0b5e42;
-      box-shadow: 0 0 0 3px rgba(11,94,66,0.25);
+      border-width: 2.5px;
+      box-shadow: 0 0 0 4px rgba(11,94,66,0.25);
+    }
+
+    .radio-group div:has(input:checked)::after {
+      content: "✓";
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #0b5e42;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      border: 2px solid white;
     }
 
     .radio-group input[type="radio"] {
@@ -162,6 +183,38 @@
       font-size: 1.1rem;
       letter-spacing: normal;
       cursor: pointer;
+    }
+
+    /* AMÉLIORATION: Badge plus visible */
+    .radio-group div:first-child span {
+      background: #0b5e42 !important;
+      color: white !important;
+      padding: 4px 12px !important;
+      border-radius: 40px !important;
+      margin-left: 8px !important;
+      font-size: 0.9rem !important;
+      font-weight: 600 !important;
+    }
+
+    /* ---------- STYLES POUR CHAMPS INVALIDES (VALIDATION UX) ---------- */
+    .field-error {
+      border: 2.5px solid #c03a2b !important;
+      background-color: #fff6f5 !important;
+      box-shadow: 0 0 0 3px rgba(192,58,43,0.15) !important;
+      animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+
+    /* Animation de focus en douceur */
+    html {
+      scroll-behavior: smooth;
     }
 
     /* ---------- QUANTITÉ : STYLE ROULETTE/STEPPER ÉLÉGANT ---------- */
@@ -323,7 +376,7 @@
       Design intemporel, mouvement suisse. Livraison rapide dans toute l'Algérie.
     </div>
     
-    <!-- ===== ORDER FORM (AMÉLIORATION TOTALE) ===== -->
+    <!-- ===== ORDER FORM ===== -->
     <form id="orderForm">
       <!-- Nom et Prénom -->
       <div class="form-group">
@@ -419,7 +472,7 @@
         <div class="radio-group">
           <div>
             <input type="radio" id="domicile" name="livraisonType" value="Livraison à domicile" checked>
-            <label for="domicile">🚚 À domicile <span style="background:#0b5e42; color:white; padding:4px 12px; border-radius:40px; margin-left:8px; font-size:0.9rem;">+200 DZD</span></label>
+            <label for="domicile">🚚 À domicile <span>+200 DZD</span></label>
           </div>
           <div>
             <input type="radio" id="bureau" name="livraisonType" value="Livraison au bureau">
@@ -455,7 +508,7 @@
     <div class="footer-note">⏚ Livraison express dans toute l'Algérie • Paiement à la livraison</div>
   </div>
 
-  <!-- ===== script.js (PARFAIT, TOUT FONCTIONNE) ===== -->
+  <!-- ===== script.js (INTACT - AJOUT MINIMAL POUR SCROLL & HIGHLIGHT) ===== -->
   <script>
     // === PRIX UNITAIRE FIXE ===
     const PRIX_UNITAIRE = 12900;
@@ -545,6 +598,54 @@
     const form = document.getElementById('orderForm');
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyj--n7dv3y_cdUS5dn2NFdWWsyq1Hc2Nyr5lhRnryhmKI08X9XZn1j8UvjDyQMoz_K/exec'; 
 
+    // --- AJOUT MINIMAL POUR SCROLL & HIGHLIGHT (SANS MODIFIER LOGIQUE EXISTANTE) ---
+    // Fonction utilitaire pour nettoyer les classes d'erreur
+    function clearFieldErrors() {
+      document.querySelectorAll('.field-error').forEach(el => {
+        el.classList.remove('field-error');
+      });
+    }
+
+    // Fonction pour scroller et surligner le premier champ invalide
+    function scrollToFirstInvalid() {
+      clearFieldErrors();
+      
+      const nom = document.getElementById('nom');
+      const tel = document.getElementById('tel');
+      const wilaya = document.getElementById('wilaya');
+      const adresse = document.getElementById('adresse');
+      
+      if (!nom.value.trim()) {
+        nom.classList.add('field-error');
+        nom.focus({ preventScroll: true });
+        nom.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return true;
+      }
+      
+      if (!tel.value.trim()) {
+        tel.classList.add('field-error');
+        tel.focus({ preventScroll: true });
+        tel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return true;
+      }
+      
+      if (!wilaya.value) {
+        wilaya.classList.add('field-error');
+        wilaya.focus({ preventScroll: true });
+        wilaya.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return true;
+      }
+      
+      if (!adresse.value.trim()) {
+        adresse.classList.add('field-error');
+        adresse.focus({ preventScroll: true });
+        adresse.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return true;
+      }
+      
+      return false;
+    }
+
     function validateForm() {
       let isValid = true;
       document.querySelectorAll('.error-msg').forEach(el => el.textContent = '');
@@ -578,6 +679,12 @@
         alert('La quantité doit être au moins 1');
         isValid = false;
       }
+      
+      // AJOUT: Scroll au premier champ invalide si validation échoue
+      if (!isValid) {
+        scrollToFirstInvalid();
+      }
+      
       return isValid;
     }
 
@@ -641,9 +748,24 @@
         document.getElementById('domicile').checked = true;
         document.getElementById('wilaya').value = '';
         updatePrixTotal();
+        clearFieldErrors(); // Nettoyer les erreurs après succès
       } else {
         feedbackDiv.innerHTML = '<div class="success-message" style="background:#f8dddd; color:#a1312b;">❌ Erreur de connexion. Veuillez réessayer ou nous appeler.</div>';
       }
+    });
+
+    // Nettoyer les erreurs quand l'utilisateur commence à taper
+    document.getElementById('nom').addEventListener('input', function() {
+      this.classList.remove('field-error');
+    });
+    document.getElementById('tel').addEventListener('input', function() {
+      this.classList.remove('field-error');
+    });
+    document.getElementById('adresse').addEventListener('input', function() {
+      this.classList.remove('field-error');
+    });
+    document.getElementById('wilaya').addEventListener('change', function() {
+      this.classList.remove('field-error');
     });
   </script>
 
