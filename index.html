@@ -6,7 +6,7 @@
   <title>Montre Élégance · Commande</title>
   <style>
     /* ========== style.css ========== */
-    /* MOBILE-FIRST • DESIGN ÉPURÉ • ÉLÉGANT • AMÉLIORÉ */
+    /* MOBILE-FIRST • DESIGN ÉPURÉ • ÉLÉGANT • AMÉLIORÉ AVEC CARROUSEL */
     * {
       margin: 0;
       padding: 0;
@@ -40,20 +40,61 @@
       line-height: 1.2;
     }
 
-    .product-image {
+    /* ===== CARROUSEL D'IMAGES TACTILE AVEC INFINI ===== */
+    .carousel-container {
+      position: relative;
       width: 100%;
       border-radius: 24px;
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0,0,0,0.03);
       margin: 1.2rem 0 1rem;
       background: #f4f2f0;
+      touch-action: pan-y pinch-zoom;
     }
 
-    .product-image img {
+    .carousel-track {
+      display: flex;
+      transition: transform 0.3s ease-out;
+      cursor: grab;
+    }
+
+    .carousel-track:active {
+      cursor: grabbing;
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+
+    .carousel-slide img {
       width: 100%;
       height: auto;
       display: block;
-      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    /* Indicateurs de position (petits points) */
+    .carousel-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d4cfc9;
+      transition: all 0.2s ease;
+    }
+
+    .indicator.active {
+      background: #0b5e42;
+      width: 20px;
+      border-radius: 10px;
     }
 
     .price {
@@ -115,7 +156,7 @@
       box-shadow: 0 0 0 4px rgba(159,126,102,0.08);
     }
 
-    /* ---------- RADIO BOUTONS AMÉLIORÉS - SÉLECTION TRÈS CLAIRE ---------- */
+    /* ---------- RADIO BOUTONS AMÉLIORÉS - SÉLECTION AVEC CERCLE REMPLI ---------- */
     .radio-group {
       display: flex;
       flex-wrap: wrap;
@@ -135,9 +176,10 @@
       transition: all 0.2s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
       position: relative;
+      flex: 1 1 auto;
     }
 
-    /* AMÉLIORATION: Indicateur de sélection beaucoup plus visible */
+    /* AMÉLIORATION: Indicateur de sélection - cercle rempli uniquement */
     .radio-group div:has(input:checked) {
       background: #c8e6d9;
       border-color: #0b5e42;
@@ -145,33 +187,23 @@
       box-shadow: 0 0 0 4px rgba(11,94,66,0.25);
     }
 
+    /* Supprimer le checkmark */
     .radio-group div:has(input:checked)::after {
-      content: "✓";
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: #0b5e42;
-      color: white;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: bold;
-      border: 2px solid white;
+      display: none;
     }
 
     .radio-group input[type="radio"] {
       width: 1.5rem;
       height: 1.5rem;
       margin: 0;
-      accent-color: #0b5e42;
+      accent-color: #0b5e42; /* Remplit le cercle avec la couleur quand sélectionné */
       transform: scale(1.2);
       border-radius: 50%;
       border: 2px solid #2a5c4f;
       cursor: pointer;
+      -webkit-appearance: radio;
+      -moz-appearance: radio;
+      appearance: radio;
     }
 
     .radio-group label {
@@ -185,8 +217,8 @@
       cursor: pointer;
     }
 
-    /* AMÉLIORATION: Badge plus visible */
-    .radio-group div:first-child span {
+    /* Badge de prix pour livraison */
+    .delivery-badge {
       background: #0b5e42 !important;
       color: white !important;
       padding: 4px 12px !important;
@@ -194,6 +226,7 @@
       margin-left: 8px !important;
       font-size: 0.9rem !important;
       font-weight: 600 !important;
+      white-space: nowrap;
     }
 
     /* ---------- STYLES POUR CHAMPS INVALIDES (VALIDATION UX) ---------- */
@@ -212,7 +245,6 @@
       80% { transform: translateX(3px); }
     }
 
-    /* Animation de focus en douceur */
     html {
       scroll-behavior: smooth;
     }
@@ -302,6 +334,8 @@
       border-radius: 40px;
       border: 1px solid #c3dbd2;
       font-weight: 500;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .btn {
@@ -358,6 +392,7 @@
       h1 { font-size: 1.7rem; }
       .quantity-stepper button { width: 48px; height: 52px; font-size: 2rem; }
       .quantity-stepper input { width: 70px; font-size: 1.4rem; }
+      .radio-group div { padding: 0.6rem 1rem; }
     }
   </style>
 </head>
@@ -365,11 +400,29 @@
   <div class="container">
     <h1>Élégance&nbsp;Noire</h1>
     
-    <div class="product-image">
-      <img src="w1.png" alt="Montre Élégance Noire — cadran minimaliste" loading="lazy">
+    <!-- ===== CARROUSEL D'IMAGES TACTILE INFINI (5 IMAGES) ===== -->
+    <div class="carousel-container" id="carousel">
+      <div class="carousel-track" id="carouselTrack">
+        <div class="carousel-slide"><img src="w5.png" alt="Montre Élégance Noire - Vue 5" loading="lazy"></div>
+        <div class="carousel-slide"><img src="w1.png" alt="Montre Élégance Noire - Vue 1" loading="lazy"></div>
+        <div class="carousel-slide"><img src="w2.png" alt="Montre Élégance Noire - Vue 2" loading="lazy"></div>
+        <div class="carousel-slide"><img src="w3.png" alt="Montre Élégance Noire - Vue 3" loading="lazy"></div>
+        <div class="carousel-slide"><img src="w4.png" alt="Montre Élégance Noire - Vue 4" loading="lazy"></div>
+        <div class="carousel-slide"><img src="w5.png" alt="Montre Élégance Noire - Vue 5" loading="lazy"></div>
+        <div class="carousel-slide"><img src="w1.png" alt="Montre Élégance Noire - Vue 1" loading="lazy"></div>
+      </div>
     </div>
     
-    <div class="price" id="prixUnitaire">12 900 DZD</div>
+    <!-- Indicateurs de position (points) -->
+    <div class="carousel-indicators" id="carouselIndicators">
+      <span class="indicator active"></span>
+      <span class="indicator"></span>
+      <span class="indicator"></span>
+      <span class="indicator"></span>
+      <span class="indicator"></span>
+    </div>
+    
+    <div class="price" id="prixUnitaire">1 200 DZD</div>
     
     <div class="description">
       ✦ Acier inoxydable • Verre saphir • Étanche 5 ATM ✦<br>
@@ -392,69 +445,65 @@
         <div class="error-msg" id="errorTel"></div>
       </div>
       
-      <!-- WILAYA avec frais intégrés -->
+      <!-- WILAYA avec codes et frais selon les tableaux fournis -->
       <div class="form-group">
         <label>Wilaya <span>*</span></label>
         <select id="wilaya">
           <option value="" disabled selected>— Sélectionnez une wilaya —</option>
-          <option value="Adrar">Adrar (650 DZD)</option>
-          <option value="Chlef">Chlef (400 DZD)</option>
-          <option value="Laghouat">Laghouat (500 DZD)</option>
-          <option value="Oum El Bouaghi">Oum El Bouaghi (450 DZD)</option>
-          <option value="Batna">Batna (450 DZD)</option>
-          <option value="Béjaïa">Béjaïa (400 DZD)</option>
-          <option value="Biskra">Biskra (500 DZD)</option>
-          <option value="Béchar">Béchar (800 DZD)</option>
-          <option value="Blida">Blida (300 DZD)</option>
-          <option value="Bouira">Bouira (350 DZD)</option>
-          <option value="Tamanrasset">Tamanrasset (1200 DZD)</option>
-          <option value="Tébessa">Tébessa (550 DZD)</option>
-          <option value="Tlemcen">Tlemcen (450 DZD)</option>
-          <option value="Tiaret">Tiaret (450 DZD)</option>
-          <option value="Tizi Ouzou">Tizi Ouzou (350 DZD)</option>
-          <option value="Alger">Alger (200 DZD)</option>
-          <option value="Djelfa">Djelfa (500 DZD)</option>
-          <option value="Jijel">Jijel (400 DZD)</option>
-          <option value="Sétif">Sétif (400 DZD)</option>
-          <option value="Saïda">Saïda (450 DZD)</option>
-          <option value="Skikda">Skikda (400 DZD)</option>
-          <option value="Sidi Bel Abbès">Sidi Bel Abbès (450 DZD)</option>
-          <option value="Annaba">Annaba (400 DZD)</option>
-          <option value="Guelma">Guelma (450 DZD)</option>
-          <option value="Constantine">Constantine (400 DZD)</option>
-          <option value="Médéa">Médéa (300 DZD)</option>
-          <option value="Mostaganem">Mostaganem (400 DZD)</option>
-          <option value="M'Sila">M'Sila (450 DZD)</option>
-          <option value="Mascara">Mascara (400 DZD)</option>
-          <option value="Ouargla">Ouargla (700 DZD)</option>
-          <option value="Oran">Oran (400 DZD)</option>
-          <option value="El Bayadh">El Bayadh (600 DZD)</option>
-          <option value="Illizi">Illizi (1400 DZD)</option>
-          <option value="Bordj Bou Arreridj">Bordj Bou Arreridj (400 DZD)</option>
-          <option value="Boumerdès">Boumerdès (250 DZD)</option>
-          <option value="El Tarf">El Tarf (450 DZD)</option>
-          <option value="Tindouf">Tindouf (1500 DZD)</option>
-          <option value="Tissemsilt">Tissemsilt (400 DZD)</option>
-          <option value="El Oued">El Oued (600 DZD)</option>
-          <option value="Khenchela">Khenchela (500 DZD)</option>
-          <option value="Souk Ahras">Souk Ahras (500 DZD)</option>
-          <option value="Tipaza">Tipaza (250 DZD)</option>
-          <option value="Mila">Mila (400 DZD)</option>
-          <option value="Aïn Defla">Aïn Defla (300 DZD)</option>
-          <option value="Naâma">Naâma (600 DZD)</option>
-          <option value="Aïn Témouchent">Aïn Témouchent (450 DZD)</option>
-          <option value="Ghardaïa">Ghardaïa (600 DZD)</option>
-          <option value="Relizane">Relizane (400 DZD)</option>
-          <option value="Timimoun">Timimoun (1100 DZD)</option>
-          <option value="Bordj Badji Mokhtar">Bordj Badji Mokhtar (1800 DZD)</option>
-          <option value="Ouled Djellal">Ouled Djellal (650 DZD)</option>
-          <option value="Béni Abbès">Béni Abbès (950 DZD)</option>
-          <option value="In Salah">In Salah (1300 DZD)</option>
-          <option value="In Guezzam">In Guezzam (1700 DZD)</option>
-          <option value="Touggourt">Touggourt (650 DZD)</option>
-          <option value="Djanet">Djanet (1600 DZD)</option>
-          <option value="El M'Ghair">El M'Ghair (600 DZD)</option>
-          <option value="El Meniaa">El Meniaa (750 DZD)</option>
+          <option value="01 - Adrar">01 - Adrar (900 DA)</option>
+          <option value="02 - Chlef">02 - Chlef (450 DA)</option>
+          <option value="03 - Laghouat">03 - Laghouat (600 DA)</option>
+          <option value="04 - Oum El Bouaghi">04 - Oum El Bouaghi (450 DA)</option>
+          <option value="05 - Batna">05 - Batna (450 DA)</option>
+          <option value="06 - Béjaïa">06 - Béjaïa (450 DA)</option>
+          <option value="07 - Biskra">07 - Biskra (600 DA)</option>
+          <option value="08 - Béchar">08 - Béchar (650 DA)</option>
+          <option value="09 - Blida">09 - Blida (300 DA)</option>
+          <option value="10 - Bouira">10 - Bouira (450 DA)</option>
+          <option value="11 - Tamanrasset">11 - Tamanrasset (1050 DA)</option>
+          <option value="12 - Tébessa">12 - Tébessa (450 DA)</option>
+          <option value="13 - Tlemcen">13 - Tlemcen (500 DA)</option>
+          <option value="14 - Tiaret">14 - Tiaret (450 DA)</option>
+          <option value="15 - Tizi Ouzou">15 - Tizi Ouzou (450 DA)</option>
+          <option value="16 - Alger">16 - Alger (350 DA)</option>
+          <option value="17 - Djelfa">17 - Djelfa (600 DA)</option>
+          <option value="18 - Jijel">18 - Jijel (450 DA)</option>
+          <option value="19 - Sétif">19 - Sétif (450 DA)</option>
+          <option value="20 - Saïda">20 - Saïda (450 DA)</option>
+          <option value="21 - Skikda">21 - Skikda (450 DA)</option>
+          <option value="22 - Sidi Bel Abbès">22 - Sidi Bel Abbès (450 DA)</option>
+          <option value="23 - Annaba">23 - Annaba (450 DA)</option>
+          <option value="24 - Guelma">24 - Guelma (450 DA)</option>
+          <option value="25 - Constantine">25 - Constantine (450 DA)</option>
+          <option value="26 - Médéa">26 - Médéa (450 DA)</option>
+          <option value="27 - Mostaganem">27 - Mostaganem (450 DA)</option>
+          <option value="28 - M'Sila">28 - M'Sila (500 DA)</option>
+          <option value="29 - Mascara">29 - Mascara (450 DA)</option>
+          <option value="30 - Ouargla">30 - Ouargla (600 DA)</option>
+          <option value="31 - Oran">31 - Oran (450 DA)</option>
+          <option value="32 - El Bayadh">32 - El Bayadh (///)</option>
+          <option value="34 - Bordj Bou Arreridj">34 - Bordj Bou Arreridj (450 DA)</option>
+          <option value="35 - Boumerdès">35 - Boumerdès (450 DA)</option>
+          <option value="36 - El Tarf">36 - El Tarf (450 DA)</option>
+          <option value="38 - Tissemsilt">38 - Tissemsilt (///)</option>
+          <option value="39 - El Oued">39 - El Oued (600 DA)</option>
+          <option value="40 - Khenchela">40 - Khenchela (///)</option>
+          <option value="41 - Souk Ahras">41 - Souk Ahras (450 DA)</option>
+          <option value="42 - Tipaza">42 - Tipaza (450 DA)</option>
+          <option value="43 - Mila">43 - Mila (450 DA)</option>
+          <option value="44 - Aïn Defla">44 - Aïn Defla (450 DA)</option>
+          <option value="45 - Naâma">45 - Naâma (///)</option>
+          <option value="46 - Aïn Témouchent">46 - Aïn Témouchent (///)</option>
+          <option value="47 - Ghardaïa">47 - Ghardaïa (600 DA)</option>
+          <option value="48 - Relizane">48 - Relizane (450 DA)</option>
+          <option value="49 - El M'Ghair">49 - El M'Ghair (///)</option>
+          <option value="50 - El Menia">50 - El Menia (///)</option>
+          <option value="51 - Ouled Djellal">51 - Ouled Djellal (550 DA)</option>
+          <option value="53 - Béni Abbès">53 - Béni Abbès (///)</option>
+          <option value="54 - Timimoun">54 - Timimoun (///)</option>
+          <option value="55 - Touggourt">55 - Touggourt (600 DA)</option>
+          <option value="57 - In Salah">57 - In Salah (///)</option>
+          <option value="58 - In Guezzam">58 - In Guezzam (///)</option>
         </select>
         <div class="error-msg" id="errorWilaya"></div>
       </div>
@@ -466,17 +515,17 @@
         <div class="error-msg" id="errorAdresse"></div>
       </div>
       
-      <!-- TYPE DE LIVRAISON : SUPER VISIBLE avec +200 DZD pour domicile -->
+      <!-- TYPE DE LIVRAISON : RADIO BOUTONS avec codes Wilaya -->
       <div class="form-group">
         <label>Type de livraison <span>*</span></label>
         <div class="radio-group">
           <div>
-            <input type="radio" id="domicile" name="livraisonType" value="Livraison à domicile" checked>
-            <label for="domicile">🚚 À domicile <span>+200 DZD</span></label>
+            <input type="radio" id="stopdesk" name="livraisonType" value="Stop Desk" checked>
+            <label for="stopdesk">📦 Stop Desk (الى المكتب)<span class="delivery-badge" id="stopdeskPrice">0 DA</span></label>
           </div>
           <div>
-            <input type="radio" id="bureau" name="livraisonType" value="Livraison au bureau">
-            <label for="bureau">🏢 Au bureau</label>
+            <input type="radio" id="domicile" name="livraisonType" value="Livraison à domicile">
+            <label for="domicile">🚚 À domicile (الى البيت)<span class="delivery-badge" id="domicilePrice">0 DA</span></label>
           </div>
         </div>
       </div>
@@ -494,11 +543,11 @@
       <!-- PRIX TOTAL + DÉTAIL FRAIS -->
       <div class="total-price">
         <span class="total-label">💰 Total</span>
-        <span id="totalAffichage">13 100 DZD</span>
+        <span id="totalAffichage">13 350 DZD</span>
       </div>
       <div class="frais-detail" id="fraisDetail">
-        <span>Produit: 12 900 DZD x1</span>
-        <span>Livraison: 200 DZD</span>
+        <span>Produit: 1 200 DZD x1</span>
+        <span>Livraison: 450 DA</span>
       </div>
       
       <button type="submit" class="btn">✨ Commander maintenant</button>
@@ -508,10 +557,68 @@
     <div class="footer-note">⏚ Livraison express dans toute l'Algérie • Paiement à la livraison</div>
   </div>
 
-  <!-- ===== script.js (INTACT - AJOUT MINIMAL POUR SCROLL & HIGHLIGHT) ===== -->
+  <!-- ===== script.js avec carrousel infini ===== -->
   <script>
     // === PRIX UNITAIRE FIXE ===
-    const PRIX_UNITAIRE = 12900;
+    const PRIX_UNITAIRE = 1200;
+
+    // --- DONNÉES DES FRAIS DE LIVRAISON (basées sur les tableaux fournis) ---
+    const FRAIS_WILAYA = {
+      "01 - Adrar": { stopdesk: 900, domicile: 1400 },
+      "02 - Chlef": { stopdesk: 450, domicile: 750 },
+      "03 - Laghouat": { stopdesk: 600, domicile: 950 },
+      "04 - Oum El Bouaghi": { stopdesk: 450, domicile: 800 },
+      "05 - Batna": { stopdesk: 450, domicile: 800 },
+      "06 - Béjaïa": { stopdesk: 450, domicile: 800 },
+      "07 - Biskra": { stopdesk: 600, domicile: 950 },
+      "08 - Béchar": { stopdesk: 650, domicile: 1100 },
+      "09 - Blida": { stopdesk: 300, domicile: 400 },
+      "10 - Bouira": { stopdesk: 450, domicile: 750 },
+      "11 - Tamanrasset": { stopdesk: 1050, domicile: 1600 },
+      "12 - Tébessa": { stopdesk: 450, domicile: 850 },
+      "13 - Tlemcen": { stopdesk: 500, domicile: 850 },
+      "14 - Tiaret": { stopdesk: 450, domicile: 800 },
+      "15 - Tizi Ouzou": { stopdesk: 450, domicile: 750 },
+      "16 - Alger": { stopdesk: 350, domicile: 500 },
+      "17 - Djelfa": { stopdesk: 600, domicile: 950 },
+      "18 - Jijel": { stopdesk: 450, domicile: 800 },
+      "19 - Sétif": { stopdesk: 450, domicile: 750 },
+      "20 - Saïda": { stopdesk: 450, domicile: 800 },
+      "21 - Skikda": { stopdesk: 450, domicile: 800 },
+      "22 - Sidi Bel Abbès": { stopdesk: 450, domicile: 800 },
+      "23 - Annaba": { stopdesk: 450, domicile: 800 },
+      "24 - Guelma": { stopdesk: 450, domicile: 800 },
+      "25 - Constantine": { stopdesk: 450, domicile: 800 },
+      "26 - Médéa": { stopdesk: 450, domicile: 750 },
+      "27 - Mostaganem": { stopdesk: 450, domicile: 800 },
+      "28 - M'Sila": { stopdesk: 500, domicile: 850 },
+      "29 - Mascara": { stopdesk: 450, domicile: 800 },
+      "30 - Ouargla": { stopdesk: 600, domicile: 950 },
+      "31 - Oran": { stopdesk: 450, domicile: 800 },
+      "32 - El Bayadh": { stopdesk: null, domicile: 1100 },
+      "34 - Bordj Bou Arreridj": { stopdesk: 450, domicile: 750 },
+      "35 - Boumerdès": { stopdesk: 450, domicile: 750 },
+      "36 - El Tarf": { stopdesk: 450, domicile: 800 },
+      "38 - Tissemsilt": { stopdesk: null, domicile: 800 },
+      "39 - El Oued": { stopdesk: 600, domicile: 950 },
+      "40 - Khenchela": { stopdesk: null, domicile: 800 },
+      "41 - Souk Ahras": { stopdesk: 450, domicile: 800 },
+      "42 - Tipaza": { stopdesk: 450, domicile: 750 },
+      "43 - Mila": { stopdesk: 450, domicile: 800 },
+      "44 - Aïn Defla": { stopdesk: 450, domicile: 750 },
+      "45 - Naâma": { stopdesk: null, domicile: 1100 },
+      "46 - Aïn Témouchent": { stopdesk: null, domicile: 800 },
+      "47 - Ghardaïa": { stopdesk: 600, domicile: 950 },
+      "48 - Relizane": { stopdesk: 450, domicile: 800 },
+      "49 - El M'Ghair": { stopdesk: null, domicile: 950 },
+      "50 - El Menia": { stopdesk: null, domicile: 1000 },
+      "51 - Ouled Djellal": { stopdesk: 550, domicile: 950 },
+      "53 - Béni Abbès": { stopdesk: null, domicile: 1000 },
+      "54 - Timimoun": { stopdesk: null, domicile: 1400 },
+      "55 - Touggourt": { stopdesk: 600, domicile: 950 },
+      "57 - In Salah": { stopdesk: null, domicile: 1600 },
+      "58 - In Guezzam": { stopdesk: null, domicile: 1600 }
+    };
 
     // --- DOM ÉLÉMENTS ---
     const quantiteInput = document.getElementById('quantite');
@@ -520,23 +627,50 @@
     const totalSpan = document.getElementById('totalAffichage');
     const fraisDetail = document.getElementById('fraisDetail');
     const wilayaSelect = document.getElementById('wilaya');
-    const livraisonRadios = document.querySelectorAll('input[name="livraisonType"]');
+    const stopdeskRadio = document.getElementById('stopdesk');
     const domicileRadio = document.getElementById('domicile');
+    const stopdeskPriceSpan = document.getElementById('stopdeskPrice');
+    const domicilePriceSpan = document.getElementById('domicilePrice');
 
-    // --- EXTRAIRE FRAIS WILAYA depuis le texte de l'option ---
+    // --- FONCTIONS DE GESTION DES FRAIS ---
     function getFraisWilaya() {
       const selected = wilayaSelect.value;
-      if (!selected) return 0;
-      const option = Array.from(wilayaSelect.options).find(opt => opt.value === selected);
-      if (!option) return 0;
-      const text = option.text;
-      const match = text.match(/\((\d+)\s*DZD\)/);
-      return match ? parseInt(match[1], 10) : 0;
+      if (!selected || !FRAIS_WILAYA[selected]) return { stopdesk: 0, domicile: 0 };
+      
+      const frais = FRAIS_WILAYA[selected];
+      return {
+        stopdesk: frais.stopdesk || 0,
+        domicile: frais.domicile || 0
+      };
     }
 
-    // --- FRAIS DOMICILE : +200 DZD si "À domicile" est coché ---
-    function getFraisDomicile() {
-      return domicileRadio.checked ? 200 : 0;
+    function getFraisActuel() {
+      const frais = getFraisWilaya();
+      return stopdeskRadio.checked ? frais.stopdesk : frais.domicile;
+    }
+
+    // Mise à jour de l'affichage des prix dans les badges
+    function updateDeliveryPrices() {
+      const frais = getFraisWilaya();
+      
+      if (frais.stopdesk > 0) {
+        stopdeskPriceSpan.textContent = frais.stopdesk + ' DA';
+        stopdeskPriceSpan.style.opacity = '1';
+      } else {
+        stopdeskPriceSpan.textContent = 'Non disponible';
+        stopdeskPriceSpan.style.opacity = '0.7';
+        if (stopdeskRadio.checked && frais.stopdesk === 0) {
+          domicileRadio.checked = true;
+        }
+      }
+      
+      if (frais.domicile > 0) {
+        domicilePriceSpan.textContent = frais.domicile + ' DA';
+        domicilePriceSpan.style.opacity = '1';
+      } else {
+        domicilePriceSpan.textContent = 'Non disponible';
+        domicilePriceSpan.style.opacity = '0.7';
+      }
     }
 
     // --- FONCTION PRINCIPALE DE MISE À JOUR DU PRIX TOTAL ---
@@ -544,30 +678,26 @@
       let qty = parseInt(quantiteInput.value, 10);
       if (isNaN(qty) || qty < 1) qty = 1;
       
-      const fraisWilaya = getFraisWilaya();
-      const fraisDomicile = getFraisDomicile();
-      const fraisTotal = fraisWilaya + fraisDomicile;
+      const fraisLivraison = getFraisActuel();
       
       const totalProduit = PRIX_UNITAIRE * qty;
-      const totalGeneral = totalProduit + fraisTotal;
+      const totalGeneral = totalProduit + fraisLivraison;
       
-      // Formatage français DZD
       totalSpan.textContent = totalGeneral.toLocaleString('fr-DZ') + ' DZD';
       
-      // Détail des frais élégant
       let produitText = `⌚ Montre: ${PRIX_UNITAIRE.toLocaleString('fr-DZ')} DZD x${qty}`;
       let livraisonText = '';
       
-      if (fraisWilaya > 0 || fraisDomicile > 0) {
-        let fraisParts = [];
-        if (fraisWilaya > 0) fraisParts.push(`Wilaya: ${fraisWilaya} DZD`);
-        if (fraisDomicile > 0) fraisParts.push(`Domicile: ${fraisDomicile} DZD`);
-        livraisonText = `📦 Livraison: ${fraisParts.join(' + ')} = ${fraisTotal.toLocaleString('fr-DZ')} DZD`;
+      if (fraisLivraison > 0) {
+        let typeText = stopdeskRadio.checked ? 'Stop Desk' : 'Domicile';
+        livraisonText = `📦 ${typeText}: ${fraisLivraison.toLocaleString('fr-DZ')} DZD`;
       } else {
         livraisonText = `📦 Livraison: sélectionnez wilaya`;
       }
       
       fraisDetail.innerHTML = `<span>${produitText}</span><span>${livraisonText}`;
+      
+      updateDeliveryPrices();
     }
 
     // --- ÉVÈNEMENTS STEPPER (quantité) ---
@@ -585,28 +715,153 @@
     moinsBtn.addEventListener('click', decrementer);
     plusBtn.addEventListener('click', incrementer);
     
-    // --- Écouteurs pour wilaya et radio livraison ---
     wilayaSelect.addEventListener('change', updatePrixTotal);
-    livraisonRadios.forEach(radio => radio.addEventListener('change', updatePrixTotal));
+    stopdeskRadio.addEventListener('change', updatePrixTotal);
+    domicileRadio.addEventListener('change', updatePrixTotal);
 
-    // --- INITIALISATION ---
     window.addEventListener('DOMContentLoaded', function() {
       updatePrixTotal();
+    });
+
+    // ========== CARROUSEL INFINI TACTILE ==========
+    const carouselTrack = document.getElementById('carouselTrack');
+    const indicators = document.querySelectorAll('.indicator');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const totalSlides = slides.length; // Now 7 slides (clone + original + clone)
+    const originalSlidesCount = 5; // Number of original images
+    
+    let currentIndex = 1; // Start at first original slide (index 1, which is w1.png)
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    function updateCarousel(index, animate = true) {
+      // Set transition based on animate parameter
+      carouselTrack.style.transition = animate ? 'transform 0.3s ease-out' : 'none';
+      
+      // Apply transform
+      const slideWidth = carouselTrack.clientWidth;
+      carouselTrack.style.transform = `translateX(-${index * slideWidth}px)`;
+      
+      // Update indicators based on the actual image (mapping to original indices)
+      let indicatorIndex;
+      if (index === 0) indicatorIndex = originalSlidesCount - 1; // Last original
+      else if (index === totalSlides - 1) indicatorIndex = 0; // First original
+      else indicatorIndex = index - 1; // Original mapping
+      
+      indicators.forEach((ind, i) => {
+        if (i === indicatorIndex) {
+          ind.classList.add('active');
+        } else {
+          ind.classList.remove('active');
+        }
+      });
+      
+      currentIndex = index;
+    }
+
+    // Handle infinite loop - reposition without animation when at clones
+    function checkAndJump() {
+      const slideWidth = carouselTrack.clientWidth;
+      
+      // If at last clone (index totalSlides-1), jump to first original (index 1)
+      if (currentIndex === totalSlides - 1) {
+        setTimeout(() => {
+          carouselTrack.style.transition = 'none';
+          carouselTrack.style.transform = `translateX(-${1 * slideWidth}px)`;
+          currentIndex = 1;
+        }, 300); // Wait for animation to complete
+      }
+      
+      // If at first clone (index 0), jump to last original (index totalSlides-2)
+      if (currentIndex === 0) {
+        setTimeout(() => {
+          carouselTrack.style.transition = 'none';
+          carouselTrack.style.transform = `translateX(-${(totalSlides - 2) * slideWidth}px)`;
+          currentIndex = totalSlides - 2;
+        }, 300); // Wait for animation to complete
+      }
+    }
+
+    // Initialize carousel
+    window.addEventListener('load', function() {
+      updateCarousel(1, false); // Start at first original slide
+    });
+
+    window.addEventListener('resize', function() {
+      updateCarousel(currentIndex, false);
+    });
+
+    // Touch events for swiping
+    carouselTrack.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      currentX = startX;
+      isDragging = true;
+      carouselTrack.style.transition = 'none';
+      e.preventDefault();
+    }, { passive: false });
+
+    carouselTrack.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      const slideWidth = carouselTrack.clientWidth;
+      
+      const maxDrag = slideWidth * 0.3;
+      const boundedDiff = Math.max(-maxDrag, Math.min(maxDrag, diff));
+      
+      carouselTrack.style.transform = `translateX(calc(-${currentIndex * slideWidth}px + ${boundedDiff}px))`;
+      
+      e.preventDefault();
+    }, { passive: false });
+
+    carouselTrack.addEventListener('touchend', function(e) {
+      if (!isDragging) return;
+      
+      isDragging = false;
+      carouselTrack.style.transition = 'transform 0.3s ease-out';
+      
+      const diff = currentX - startX;
+      const slideWidth = carouselTrack.clientWidth;
+      
+      let newIndex = currentIndex;
+      
+      if (Math.abs(diff) > slideWidth * 0.2) {
+        if (diff > 0) {
+          newIndex = currentIndex - 1; // Swipe right
+        } else {
+          newIndex = currentIndex + 1; // Swipe left
+        }
+      }
+      
+      // Ensure newIndex stays within bounds
+      newIndex = Math.max(0, Math.min(totalSlides - 1, newIndex));
+      
+      updateCarousel(newIndex, true);
+      
+      // Check if we need to jump for infinite loop
+      checkAndJump();
+      
+      startX = 0;
+      currentX = 0;
+    });
+
+    // Prevent default drag on images
+    carouselTrack.addEventListener('dragstart', function(e) {
+      e.preventDefault();
     });
 
     // ========== VALIDATION & ENVOI GOOGLE SHEETS ==========
     const form = document.getElementById('orderForm');
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyj--n7dv3y_cdUS5dn2NFdWWsyq1Hc2Nyr5lhRnryhmKI08X9XZn1j8UvjDyQMoz_K/exec'; 
 
-    // --- AJOUT MINIMAL POUR SCROLL & HIGHLIGHT (SANS MODIFIER LOGIQUE EXISTANTE) ---
-    // Fonction utilitaire pour nettoyer les classes d'erreur
     function clearFieldErrors() {
       document.querySelectorAll('.field-error').forEach(el => {
         el.classList.remove('field-error');
       });
     }
 
-    // Fonction pour scroller et surligner le premier champ invalide
     function scrollToFirstInvalid() {
       clearFieldErrors();
       
@@ -680,7 +935,12 @@
         isValid = false;
       }
       
-      // AJOUT: Scroll au premier champ invalide si validation échoue
+      const fraisActuel = getFraisActuel();
+      if (fraisActuel === 0 && wilaya.value) {
+        alert('Ce mode de livraison n\'est pas disponible pour cette wilaya');
+        isValid = false;
+      }
+      
       if (!isValid) {
         scrollToFirstInvalid();
       }
@@ -707,19 +967,16 @@
       e.preventDefault();
       if (!validateForm()) return;
 
-      // Collecte enrichie
       const nomValue = document.getElementById('nom').value.trim();
       const telValue = document.getElementById('tel').value.trim();
       const wilayaValue = document.getElementById('wilaya').value;
       const adresseValue = document.getElementById('adresse').value.trim();
-      const livraison = document.querySelector('input[name="livraisonType"]:checked')?.value || 'Livraison à domicile';
+      const livraison = document.querySelector('input[name="livraisonType"]:checked')?.value || 'Stop Desk';
       const quantite = parseInt(quantiteInput.value, 10);
       
-      const fraisWilaya = getFraisWilaya();
-      const fraisDomicile = getFraisDomicile();
-      const fraisTotal = fraisWilaya + fraisDomicile;
+      const fraisLivraison = getFraisActuel();
       const totalProduit = PRIX_UNITAIRE * quantite;
-      const totalGeneral = totalProduit + fraisTotal;
+      const totalGeneral = totalProduit + fraisLivraison;
 
       const commande = {
         timestamp: new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Algiers' }),
@@ -730,8 +987,7 @@
         typeLivraison: livraison,
         quantite: quantite,
         prixUnitaire: PRIX_UNITAIRE,
-        fraisWilaya: fraisWilaya,
-        fraisDomicile: fraisDomicile,
+        fraisLivraison: fraisLivraison,
         total: totalGeneral,
         statut: 'Nouvelle commande'
       };
@@ -745,16 +1001,15 @@
         feedbackDiv.innerHTML = '<div class="success-message">✓ Merci ! Votre commande a été reçue. Nous vous contacterons sous 24h.</div>';
         form.reset();
         quantiteInput.value = 1;
-        document.getElementById('domicile').checked = true;
+        document.getElementById('stopdesk').checked = true;
         document.getElementById('wilaya').value = '';
         updatePrixTotal();
-        clearFieldErrors(); // Nettoyer les erreurs après succès
+        clearFieldErrors();
       } else {
         feedbackDiv.innerHTML = '<div class="success-message" style="background:#f8dddd; color:#a1312b;">❌ Erreur de connexion. Veuillez réessayer ou nous appeler.</div>';
       }
     });
 
-    // Nettoyer les erreurs quand l'utilisateur commence à taper
     document.getElementById('nom').addEventListener('input', function() {
       this.classList.remove('field-error');
     });
@@ -769,14 +1024,13 @@
     });
   </script>
 
-  <!-- ===== INSTRUCTIONS APPS SCRIPT (colonne mise à jour) ===== -->
+  <!-- ===== INSTRUCTIONS APPS SCRIPT ===== -->
   <!--
     ⚡ POUR GOOGLE SHEETS : 
     Ajoutez ces en-têtes dans votre feuille : 
-    timestamp | nom | telephone | wilaya | adresse | typeLivraison | quantite | prixUnitaire | fraisWilaya | fraisDomicile | total | statut
+    timestamp | nom | telephone | wilaya | adresse | typeLivraison | quantite | prixUnitaire | fraisLivraison | total | statut
     
     Le code Apps Script reste identique, il est compatible.
   -->
 </body>
-
 </html>
